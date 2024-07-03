@@ -1,10 +1,17 @@
 import react from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 
 const ChatListScreen = (props) => {
   return (
     <View style={styles.container}>
       <Text>Chat list screen</Text>
+
+      <Button
+        title="Go to settings"
+        onPress={() => {
+          props.navigation.navigate("ChatSetting");
+        }}
+      />
     </View>
   );
 };
