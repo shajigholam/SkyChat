@@ -8,6 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import ChatListScreen from "./screens/ChatListScreen";
+import ChatSettingScreen from "./screens/ChatSettingScreen";
 
 SplashScreen.preventAutoHideAsync();
 const Stack = createStackNavigator();
@@ -58,6 +59,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Home" component={ChatListScreen} />
+          <Stack.Screen name="ChatSetting" component={ChatSettingScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
