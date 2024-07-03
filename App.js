@@ -4,7 +4,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useState } from "react";
 import * as Font from "expo-font";
 import "react-native-gesture-handler";
-import AppNavigator from "./navigation/AppNavigator";
+import AppNavigator from "./Navigation/AppNavigator";
 
 SplashScreen.preventAutoHideAsync();
 
