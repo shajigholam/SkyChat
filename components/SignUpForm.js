@@ -5,8 +5,15 @@ import Input from "../components/Input";
 import SubmitButton from "../components/SubmitButton";
 import { validateInput } from "../utils/actions/formActions";
 import { reducer } from "../utils/reducers/formReducer";
+import { signUp } from "../utils/actions/authActions";
 
 const initialState = {
+  inputValues: {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  },
   inputValidities: {
     firstName: false,
     lastName: false,
@@ -21,10 +28,23 @@ const SignUpForm = (props) => {
   const inputChangeHandler = useCallback(
     (inputId, inputValue) => {
       const result = validateInput(inputId, inputValue);
-      dispatchFormState({ inputId: inputId, validationResult: result });
+      dispatchFormState({
+        inputId: inputId,
+        validationResult: result,
+        inputValue: inputValue,
+      });
     },
     [dispatchFormState]
   );
+
+  const authHandler = () => {
+    signUp(
+      formState.inputValues.firstName,
+      formState.inputValues.lastName,
+      formState.inputValues.email,
+      formState.inputValues.password
+    );
+  };
 
   return (
     <>
@@ -66,7 +86,7 @@ const SignUpForm = (props) => {
       />
       <SubmitButton
         title="Sign up"
-        onPress={() => console.log("pressed")}
+        onPress={authHandler}
         style={{ marginTop: 20 }}
         disabled={!formState.formIsValid}
       />
