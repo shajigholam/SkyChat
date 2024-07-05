@@ -1,10 +1,14 @@
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import { LogBox, SafeAreaView, StyleSheet, Text } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useState } from "react";
 import * as Font from "expo-font";
 import "react-native-gesture-handler";
 import AppNavigator from "./Navigation/AppNavigator";
+
+// LogBox.ignoreLogs([
+//   "You are initializing Firebase Auth for React Native without providing AsyncStorage",
+// ]);
 
 SplashScreen.preventAutoHideAsync();
 
