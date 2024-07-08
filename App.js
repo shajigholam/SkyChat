@@ -1,10 +1,12 @@
-import { LogBox, SafeAreaView, StyleSheet, Text } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import {LogBox, SafeAreaView, StyleSheet, Text} from "react-native";
+import {SafeAreaProvider} from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback, useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import * as Font from "expo-font";
 import "react-native-gesture-handler";
 import AppNavigator from "./Navigation/AppNavigator";
+import {Provider} from "react-redux";
+import {store} from "./store/store";
 
 // LogBox.ignoreLogs([
 //   "You are initializing Firebase Auth for React Native without providing AsyncStorage",
@@ -54,9 +56,11 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider style={styles.container} onLayout={onLayout}>
-      <AppNavigator />
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider style={styles.container} onLayout={onLayout}>
+        <AppNavigator />
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 
