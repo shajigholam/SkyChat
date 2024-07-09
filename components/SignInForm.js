@@ -79,7 +79,7 @@ const SignInForm = props => {
         autoCapitalize="none"
         keyboardType="email-address"
         onInputChanged={inputChangeHandler}
-        value={formState.inputValues.email}
+        initialValue={formState.inputValues.email}
         errorText={formState.inputValidities["email"]}
       />
       <Input
@@ -90,7 +90,7 @@ const SignInForm = props => {
         autoCapitalize="none"
         secureTextEntry
         onInputChanged={inputChangeHandler}
-        value={formState.inputValues.password}
+        initialValue={formState.inputValues.password}
         errorText={formState.inputValidities["password"]}
       />
       {isLoading ? (
