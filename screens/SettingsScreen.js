@@ -6,6 +6,7 @@ import {Feather, FontAwesome} from "@expo/vector-icons";
 import {validateInput} from "../utils/actions/formActions";
 import {reducer} from "../utils/reducers/formReducer";
 import Input from "../components/Input";
+import {useSelector} from "react-redux";
 
 const initialState = {
   inputValues: {
@@ -24,6 +25,8 @@ const initialState = {
 };
 
 const SettingScreen = props => {
+  const userData = useSelector(state => state.auth.userData);
+
   const [formState, dispatchFormState] = useReducer(reducer, initialState);
 
   const inputChangeHandler = useCallback(
@@ -49,6 +52,7 @@ const SettingScreen = props => {
         iconPack={FontAwesome}
         onInputChanged={inputChangeHandler}
         errorText={formState.inputValidities["firstName"]}
+        initialValue={userData.firstName}
       />
       <Input
         id="lastName"
@@ -57,6 +61,7 @@ const SettingScreen = props => {
         iconPack={FontAwesome}
         onInputChanged={inputChangeHandler}
         errorText={formState.inputValidities["lastName"]}
+        initialValue={userData.lastName}
       />
       <Input
         id="email"
@@ -67,6 +72,7 @@ const SettingScreen = props => {
         keyboardType="email-address"
         onInputChanged={inputChangeHandler}
         errorText={formState.inputValidities["email"]}
+        initialValue={userData.email}
       />
       <Input
         id="about"
@@ -75,6 +81,7 @@ const SettingScreen = props => {
         iconPack={FontAwesome}
         onInputChanged={inputChangeHandler}
         errorText={formState.inputValidities["about"]}
+        initialValue={userData.about}
       />
     </PageContainer>
   );
