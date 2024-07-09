@@ -1,8 +1,29 @@
-import { validate } from "validate.js";
+import {validate} from "validate.js";
+
+export const validateLength = (id, value, minLength, maxLength, allowEmpty) => {
+  const constraints = {
+    presence: {allowEmpty: allowEmpty},
+  };
+  if (!allowEmpty || value !== "") {
+    constraints.length = {};
+
+    if (minLength != null) {
+      constraints.length.minimum = minLength;
+    }
+    if (maxLength != null) {
+      constraints.length.maximum = maxLength;
+    }
+  }
+
+  const validationResult = validate({[id]: value}, {[id]: constraints});
+
+  // just to return the value
+  return validationResult && validationResult[id];
+};
 
 export const validateString = (id, value) => {
   const constraints = {
-    presence: { allowEmpty: false },
+    presence: {allowEmpty: false},
   };
   if (value !== "") {
     constraints.format = {
@@ -12,7 +33,7 @@ export const validateString = (id, value) => {
     };
   }
 
-  const validationResult = validate({ [id]: value }, { [id]: constraints });
+  const validationResult = validate({[id]: value}, {[id]: constraints});
 
   // just to return the value
   return validationResult && validationResult[id];
@@ -20,13 +41,13 @@ export const validateString = (id, value) => {
 
 export const validateEmail = (id, value) => {
   const constraints = {
-    presence: { allowEmpty: false },
+    presence: {allowEmpty: false},
   };
   if (value !== "") {
     constraints.email = true;
   }
 
-  const validationResult = validate({ [id]: value }, { [id]: constraints });
+  const validationResult = validate({[id]: value}, {[id]: constraints});
 
   // just to return the value
   return validationResult && validationResult[id];
@@ -34,7 +55,7 @@ export const validateEmail = (id, value) => {
 
 export const validatePassword = (id, value) => {
   const constraints = {
-    presence: { allowEmpty: false },
+    presence: {allowEmpty: false},
   };
   if (value !== "") {
     constraints.length = {
@@ -43,7 +64,7 @@ export const validatePassword = (id, value) => {
     };
   }
 
-  const validationResult = validate({ [id]: value }, { [id]: constraints });
+  const validationResult = validate({[id]: value}, {[id]: constraints});
 
   // just to return the value
   return validationResult && validationResult[id];
