@@ -11,6 +11,7 @@ const AppNavigator = props => {
     state => state.auth.token !== null && state.auth.token !== ""
   );
   const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
+  // const didTryAutoLogin = true;
 
   return (
     <NavigationContainer>
