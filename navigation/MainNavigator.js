@@ -1,7 +1,7 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import {createStackNavigator} from "@react-navigation/stack";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import {Ionicons} from "@expo/vector-icons";
 
 import ChatListScreen from "../screens/ChatListScreen";
 import ChatSettingScreen from "../screens/ChatSettingScreen";
@@ -13,13 +13,15 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={{ headerTitle: "" }}>
+    <Tab.Navigator
+      screenOptions={{headerTitle: "", headerShadowVisible: false}}
+    >
       <Tab.Screen
         name="ChatList"
         component={ChatListScreen}
         options={{
           tabBarLabel: "Chats",
-          tabBarIcon: ({ color, size }) => {
+          tabBarIcon: ({color, size}) => {
             return (
               <Ionicons name="chatbubbles-outline" size={size} color={color} />
             );
@@ -31,7 +33,7 @@ const TabNavigator = () => {
         component={SettingScreen}
         options={{
           tabBarLabel: "Settings",
-          tabBarIcon: ({ color, size }) => {
+          tabBarIcon: ({color, size}) => {
             return (
               <Ionicons name="settings-outline" size={size} color={color} />
             );
@@ -42,13 +44,13 @@ const TabNavigator = () => {
   );
 };
 
-const MainNavigator = (props) => {
+const MainNavigator = props => {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Home"
         component={TabNavigator}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="ChatScreen"
