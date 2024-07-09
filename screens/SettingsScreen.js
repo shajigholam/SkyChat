@@ -1,5 +1,5 @@
-import react, {useCallback, useReducer} from "react";
-import {View, Text, StyleSheet} from "react-native";
+import react, {useCallback, useReducer, useState} from "react";
+import {View, Text, StyleSheet, ActivityIndicator} from "react-native";
 import PageTitle from "../components/PageTitle";
 import PageContainer from "../components/PageContainer";
 import {Feather, FontAwesome} from "@expo/vector-icons";
@@ -7,25 +7,27 @@ import {validateInput} from "../utils/actions/formActions";
 import {reducer} from "../utils/reducers/formReducer";
 import Input from "../components/Input";
 import {useSelector} from "react-redux";
-
-const initialState = {
-  inputValues: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    about: "",
-  },
-  inputValidities: {
-    firstName: false,
-    lastName: false,
-    email: false,
-    about: false,
-  },
-  formIsValid: false,
-};
+import SubmitButton from "../components/SubmitButton";
 
 const SettingScreen = props => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const userData = useSelector(state => state.auth.userData);
+  const initialState = {
+    inputValues: {
+      firstName: userData.firstName || "",
+      lastName: userData.lastName || "",
+      email: userData.email || "",
+      about: userData.about || "",
+    },
+    inputValidities: {
+      firstName: undefined,
+      lastName: undefined,
+      email: undefined,
+      about: undefined,
+    },
+    formIsValid: false,
+  };
 
   const [formState, dispatchFormState] = useReducer(reducer, initialState);
 
@@ -40,6 +42,8 @@ const SettingScreen = props => {
     },
     [dispatchFormState]
   );
+
+  const saveHandler = () => {};
 
   return (
     <PageContainer style={styles.container}>
@@ -83,6 +87,20 @@ const SettingScreen = props => {
         errorText={formState.inputValidities["about"]}
         initialValue={userData.about}
       />
+      {isLoading ? (
+        <ActivityIndicator
+          size={"small"}
+          color={colors.primary}
+          style={{marginTop: 25}}
+        />
+      ) : (
+        <SubmitButton
+          title="Save"
+          onPress={saveHandler}
+          style={{marginTop: 20}}
+          disabled={!formState.formIsValid}
+        />
+      )}
     </PageContainer>
   );
 };
