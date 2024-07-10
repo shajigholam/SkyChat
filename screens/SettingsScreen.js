@@ -10,10 +10,12 @@ import {useDispatch, useSelector} from "react-redux";
 import SubmitButton from "../components/SubmitButton";
 import {updateSignedInUserData, userLogout} from "../utils/actions/authActions";
 import colors from "../constants/colors";
+import {updateLoggedInUserData} from "../store/authSlice";
 
 const SettingScreen = props => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const userData = useSelector(state => state.auth.userData);
   const initialState = {
@@ -51,6 +53,12 @@ const SettingScreen = props => {
     try {
       setIsLoading(true);
       await updateSignedInUserData(userData.userId, updatedValues);
+      dispatch(updateLoggedInUserData({newData: updatedValues}));
+
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowSuccessMessage(false);
+      }, 3000);
     } catch (error) {
       console.log(error);
     } finally {
@@ -100,20 +108,23 @@ const SettingScreen = props => {
         errorText={formState.inputValidities["about"]}
         initialValue={userData.about}
       />
-      {isLoading ? (
-        <ActivityIndicator
-          size={"small"}
-          color={colors.primary}
-          style={{marginTop: 25}}
-        />
-      ) : (
-        <SubmitButton
-          title="Save"
-          onPress={saveHandler}
-          style={{marginTop: 20}}
-          disabled={!formState.formIsValid}
-        />
-      )}
+      <View style={{marginTop: 20}}>
+        {showSuccessMessage && <Text>Saved!</Text>}
+        {isLoading ? (
+          <ActivityIndicator
+            size={"small"}
+            color={colors.primary}
+            style={{marginTop: 25}}
+          />
+        ) : (
+          <SubmitButton
+            title="Save"
+            onPress={saveHandler}
+            style={{marginTop: 20}}
+            disabled={!formState.formIsValid}
+          />
+        )}
+      </View>
       <SubmitButton
         title="Logout"
         onPress={() => dispatch(userLogout())}
