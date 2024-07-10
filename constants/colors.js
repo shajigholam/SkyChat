@@ -5,4 +5,5 @@ export default {
   textColor: "#1c1e21",
   primary: "#451082",
   lightGrey: "#bdc3c7",
+  red: "#e74c3c",
 };
