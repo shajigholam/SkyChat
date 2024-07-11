@@ -4,7 +4,7 @@ import {FontAwesome} from "@expo/vector-icons";
 
 import userImage from "../assets/images/userImage.jpeg";
 import colors from "../constants/colors";
-import {launchImagePicker} from "../utils/imagePickerHelper";
+import {launchImagePicker, uploadImageAync} from "../utils/imagePickerHelper";
 
 const ProfileImage = props => {
   const source = props.uri ? {uri: props.uri} : userImage;
@@ -14,13 +14,20 @@ const ProfileImage = props => {
   const pickImage = async () => {
     try {
       const tempUri = await launchImagePicker();
+      //console.log(tempUri);
 
       if (!tempUri) return;
 
       // upload the image
+      const uploadUrl = await uploadImageAync(tempUri);
+      console.log(uploadUrl);
+
+      if (!uploadUrl) {
+        throw new Error("Could not upload image");
+      }
 
       // set the image
-      setImage({uri: tempUri});
+      setImage({uri: uploadUrl});
     } catch (error) {
       console.log(error);
     }

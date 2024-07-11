@@ -1,6 +1,13 @@
 import * as ImagePicker from "expo-image-picker";
 import {Platform} from "react-native";
 import {getFirebaseApp} from "./firebaseHelper";
+import uuid from "react-native-uuid";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 export const launchImagePicker = async () => {
   await checkMediaPermissions();
@@ -13,8 +20,9 @@ export const launchImagePicker = async () => {
   });
 
   if (!result.canceled) {
-    // console.log(result.uri);
-    return result.uri;
+    // console.log(result);
+    // console.log(result.assets[0].uri);
+    return result.assets[0].uri;
   }
 };
 
@@ -35,6 +43,16 @@ export const uploadImageAync = async uri => {
     xhr.open("GET", uri, true);
     xhr.send();
   });
+
+  const pathFolder = "profilePics";
+
+  const storageRef = ref(getStorage(app), `${pathFolder}/${uuid.v4()}`);
+
+  await uploadBytesResumable(storageRef, blob);
+
+  blob.close();
+
+  return await getDownloadURL(storageRef);
 };
 
 const checkMediaPermissions = async () => {
