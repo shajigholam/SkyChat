@@ -1,5 +1,12 @@
 import React, {useState} from "react";
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {FontAwesome} from "@expo/vector-icons";
 
 import userImage from "../assets/images/userImage.jpeg";
@@ -15,6 +22,7 @@ const ProfileImage = props => {
   const source = props.uri ? {uri: props.uri} : userImage;
 
   const [image, setImage] = useState(source);
+  const [isLoading, setIsLoading] = useState(false);
 
   const userId = props.userId;
 
@@ -26,7 +34,9 @@ const ProfileImage = props => {
       if (!tempUri) return;
 
       // upload the image
+      setIsLoading(true);
       const uploadUrl = await uploadImageAync(tempUri);
+      setIsLoading(false);
       // console.log(uploadUrl);
 
       if (!uploadUrl) {
@@ -43,14 +53,26 @@ const ProfileImage = props => {
       setImage({uri: uploadUrl});
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
   return (
     <TouchableOpacity onPress={pickImage}>
-      <Image
-        source={image}
-        style={{...styles.image, ...{width: props.size, height: props.size}}}
-      />
+      {isLoading ? (
+        <View
+          height={props.size}
+          width={props.size}
+          style={styles.loadingContainer}
+        >
+          <ActivityIndicator size={"small"} color={colors.primary} />
+        </View>
+      ) : (
+        <Image
+          source={image}
+          style={{...styles.image, ...{width: props.size, height: props.size}}}
+        />
+      )}
+
       <View style={styles.editIconContainer}>
         <FontAwesome name="pencil" size={15} color="black" />
       </View>
@@ -71,6 +93,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightGrey,
     borderRadius: 20,
     padding: 6,
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
