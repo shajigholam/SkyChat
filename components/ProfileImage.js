@@ -5,11 +5,18 @@ import {FontAwesome} from "@expo/vector-icons";
 import userImage from "../assets/images/userImage.jpeg";
 import colors from "../constants/colors";
 import {launchImagePicker, uploadImageAync} from "../utils/imagePickerHelper";
+import {updateSignedInUserData} from "../utils/actions/authActions";
+import {useDispatch} from "react-redux";
+import {updateLoggedInUserData} from "../store/authSlice";
 
 const ProfileImage = props => {
+  const dispatch = useDispatch();
+
   const source = props.uri ? {uri: props.uri} : userImage;
 
   const [image, setImage] = useState(source);
+
+  const userId = props.userId;
 
   const pickImage = async () => {
     try {
@@ -20,11 +27,17 @@ const ProfileImage = props => {
 
       // upload the image
       const uploadUrl = await uploadImageAync(tempUri);
-      console.log(uploadUrl);
+      // console.log(uploadUrl);
 
       if (!uploadUrl) {
         throw new Error("Could not upload image");
       }
+
+      const newData = {profilePicture: uploadUrl};
+
+      await updateSignedInUserData(userId, newData);
+
+      dispatch(updateLoggedInUserData({newData: newData}));
 
       // set the image
       setImage({uri: uploadUrl});
