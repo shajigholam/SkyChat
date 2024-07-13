@@ -7,6 +7,7 @@ import ChatListScreen from "../screens/ChatListScreen";
 import ChatSettingScreen from "../screens/ChatSettingScreen";
 import SettingScreen from "../screens/SettingsScreen";
 import ChatScreen from "../screens/ChatScreen";
+import NewChatScreen from "../screens/NewChatScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,27 +48,33 @@ const TabNavigator = () => {
 const MainNavigator = props => {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={TabNavigator}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ChatScreen"
-        component={ChatScreen}
-        options={{
-          headerBackTitle: "Back",
-          headerTitle: "",
-        }}
-      />
-      <Stack.Screen
-        name="ChatSetting"
-        component={ChatSettingScreen}
-        options={{
-          headerTitle: "Settings",
-          headerBackTitle: "Back",
-        }}
-      />
+      <Stack.Group>
+        <Stack.Screen
+          name="Home"
+          component={TabNavigator}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ChatScreen"
+          component={ChatScreen}
+          options={{
+            headerBackTitle: "Back",
+            headerTitle: "",
+          }}
+        />
+        <Stack.Screen
+          name="ChatSetting"
+          component={ChatSettingScreen}
+          options={{
+            headerTitle: "Settings",
+            headerBackTitle: "Back",
+          }}
+        />
+      </Stack.Group>
+
+      <Stack.Group screenOptions={{presentation: "modal"}}>
+        <Stack.Screen name="NewChat" component={NewChatScreen} />
+      </Stack.Group>
     </Stack.Navigator>
   );
 };
