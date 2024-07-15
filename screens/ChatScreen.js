@@ -1,4 +1,4 @@
-import react, { useCallback, useState } from "react";
+import react, {useCallback, useState} from "react";
 import {
   View,
   Text,
@@ -11,12 +11,19 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import {Feather} from "@expo/vector-icons";
 import backgroundImage from "../assets/images/wallpaper.jpeg";
 import colors from "../constants/colors";
+import {useSelector} from "react-redux";
 
-const ChatScreen = (props) => {
+const ChatScreen = props => {
+  const storedUsers = useSelector(state => state.users.storedUsers);
+  console.log(storedUsers);
   const [messageText, setMessageText] = useState("");
+
+  const chatData = props.route?.params?.newChatData;
+  // console.log(chatData);
+
   const sendMessage = useCallback(() => {
     setMessageText("");
   }, [messageText]);
@@ -41,7 +48,7 @@ const ChatScreen = (props) => {
           <TextInput
             style={styles.textbox}
             value={messageText}
-            onChangeText={(text) => setMessageText(text)}
+            onChangeText={text => setMessageText(text)}
             onSubmitEditing={sendMessage}
           />
 
@@ -53,7 +60,7 @@ const ChatScreen = (props) => {
 
           {messageText !== "" && (
             <TouchableOpacity
-              style={{ ...styles.mediaButton, ...styles.sendButton }}
+              style={{...styles.mediaButton, ...styles.sendButton}}
               onPress={sendMessage}
             >
               <Feather name="send" size={20} color={"white"} />
