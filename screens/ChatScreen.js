@@ -15,6 +15,8 @@ import {Feather} from "@expo/vector-icons";
 import backgroundImage from "../assets/images/wallpaper.jpeg";
 import colors from "../constants/colors";
 import {useSelector} from "react-redux";
+import PageContainer from "../components/PageContainer";
+import Bubble from "../components/Bubble";
 
 const ChatScreen = props => {
   const userData = useSelector(state => state.auth.userData);
@@ -22,6 +24,7 @@ const ChatScreen = props => {
   // console.log(storedUsers);
   const [chatUsers, setChatUsers] = useState([]);
   const [messageText, setMessageText] = useState("");
+  const [chatId, setChatId] = useState(props.route?.params?.chatId);
 
   const chatData = props.route?.params?.newChatData;
   // console.log(chatData);
@@ -56,7 +59,13 @@ const ChatScreen = props => {
         <ImageBackground
           source={backgroundImage}
           style={styles.backgroundImage}
-        ></ImageBackground>
+        >
+          <PageContainer style={{backgroundColor: "transparent"}}>
+            {!chatId && (
+              <Bubble text="This is a new chat. Say Hi!" type="system" />
+            )}
+          </PageContainer>
+        </ImageBackground>
 
         <View style={styles.inputContainer}>
           <TouchableOpacity style={styles.mediaButton}>
