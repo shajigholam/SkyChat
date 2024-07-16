@@ -1,4 +1,4 @@
-import react, {useCallback, useState} from "react";
+import react, {useCallback, useEffect, useState} from "react";
 import {
   View,
   Text,
@@ -17,12 +17,30 @@ import colors from "../constants/colors";
 import {useSelector} from "react-redux";
 
 const ChatScreen = props => {
+  const userData = useSelector(state => state.auth.userData);
   const storedUsers = useSelector(state => state.users.storedUsers);
-  console.log(storedUsers);
+  // console.log(storedUsers);
+  const [chatUsers, setChatUsers] = useState([]);
   const [messageText, setMessageText] = useState("");
 
   const chatData = props.route?.params?.newChatData;
   // console.log(chatData);
+  const getChatTitleFromName = () => {
+    const otherUserId = chatUsers.find(uid => uid !== userData.userId);
+    const otherUserData = storedUsers[otherUserId];
+
+    return (
+      otherUserData && `${otherUserData.firstName} ${otherUserData.lastName}`
+    );
+  };
+
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerTitle: getChatTitleFromName(),
+    });
+
+    setChatUsers(chatData.users);
+  }, [chatUsers]);
 
   const sendMessage = useCallback(() => {
     setMessageText("");
