@@ -1,5 +1,5 @@
 import react, {useEffect} from "react";
-import {View, Text, StyleSheet, Button} from "react-native";
+import {View, Text, StyleSheet, Button, FlatList} from "react-native";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import {useSelector} from "react-redux";
@@ -8,9 +8,12 @@ const ChatListScreen = props => {
   const selectedUser = props.route?.params?.selectedUserId;
 
   const userData = useSelector(state => state.auth.userData);
-
-  const userChats = useSelector(state => state.chats.chatsData);
-  console.log(userChats);
+  // because the chatsData is not an array, and it's obj...we need the value wo the key
+  const userChats = useSelector(state => {
+    const chatsData = state.chats.chatsData;
+    return Object.values(chatsData);
+  });
+  // console.log(userChats);
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -41,16 +44,15 @@ const ChatListScreen = props => {
   }, [props.route?.params]);
 
   return (
-    <View style={styles.container}>
-      <Text>Chat list screen</Text>
+    <FlatList
+      data={userChats}
+      renderItem={itemData => {
+        const chatData = itemData.item;
 
-      <Button
-        title="Go to chat screen"
-        onPress={() => {
-          props.navigation.navigate("ChatScreen");
-        }}
-      />
-    </View>
+        const otherUserId = chatData.users.find(uid => uid !== userData.userId);
+        return <Text>{otherUserId}</Text>;
+      }}
+    />
   );
 };
 
