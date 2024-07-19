@@ -9,6 +9,9 @@ const ChatListScreen = props => {
 
   const userData = useSelector(state => state.auth.userData);
 
+  const userChats = useSelector(state => state.chats.chatsData);
+  console.log(userChats);
+
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => {
