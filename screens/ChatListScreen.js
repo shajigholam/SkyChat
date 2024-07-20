@@ -3,17 +3,24 @@ import {View, Text, StyleSheet, Button, FlatList} from "react-native";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import {useSelector} from "react-redux";
+import DataItem from "../components/DataItem";
+import PageContainer from "../components/PageContainer";
+import PageTitle from "../components/PageTitle";
 
 const ChatListScreen = props => {
   const selectedUser = props.route?.params?.selectedUserId;
 
   const userData = useSelector(state => state.auth.userData);
+  const storedUsers = useSelector(state => state.users.storedUsers);
   // because the chatsData is not an array, and it's obj...we need the value wo the key
   const userChats = useSelector(state => {
     const chatsData = state.chats.chatsData;
-    return Object.values(chatsData);
+    return Object.values(chatsData).sort((a, b) => {
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    });
   });
   // console.log(userChats);
+  console.log(storedUsers);
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -44,15 +51,37 @@ const ChatListScreen = props => {
   }, [props.route?.params]);
 
   return (
-    <FlatList
-      data={userChats}
-      renderItem={itemData => {
-        const chatData = itemData.item;
+    <PageContainer>
+      <PageTitle text="Chats" />
 
-        const otherUserId = chatData.users.find(uid => uid !== userData.userId);
-        return <Text>{otherUserId}</Text>;
-      }}
-    />
+      <FlatList
+        data={userChats}
+        renderItem={itemData => {
+          const chatData = itemData.item;
+          const chatId = chatData.key;
+
+          const otherUserId = chatData.users.find(
+            uid => uid !== userData.userId
+          );
+          const otherUser = storedUsers[otherUserId];
+
+          if (!otherUser) return;
+
+          const title = `${otherUser.firstName} ${otherUser.lastName}`;
+          const subTitle = "This will be a message";
+          const image = otherUser.profilePicture;
+
+          return (
+            <DataItem
+              title={title}
+              subTitle={subTitle}
+              image={image}
+              onPress={() => props.navigation.navigate("ChatScreen", {chatId})}
+            />
+          );
+        }}
+      />
+    </PageContainer>
   );
 };
 

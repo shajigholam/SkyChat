@@ -10,11 +10,12 @@ import ChatScreen from "../screens/ChatScreen";
 import NewChatScreen from "../screens/NewChatScreen";
 import {useDispatch, useSelector} from "react-redux";
 import {getFirebaseApp} from "../utils/firebaseHelper";
-import {child, getDatabase, off, onValue, ref} from "firebase/database";
+import {child, get, getDatabase, off, onValue, ref} from "firebase/database";
 import {setChatsData} from "../store/chatSlice";
 import {ActivityIndicator, View} from "react-native";
 import commonStyles from "../constants/commonStyles";
 import colors from "../constants/colors";
+import {setStoredUsers} from "../store/userSlice";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -114,13 +115,25 @@ const MainNavigator = props => {
         const chatId = chatIds[i];
         const chatRef = child(dbRef, `chats/${chatId}`);
         refs.push(chatRef);
-
+        //onValue listens for changes while get execute one time
         onValue(chatRef, chatSnapshot => {
           chatsFoundCount++;
           // console.log(chatSnapshot.val());
           const data = chatSnapshot.val();
           if (data) {
             data.key = chatSnapshot.key; //adding a key prop(chat id) to data
+
+            data.users.forEach(userId => {
+              if (storedUsers[userId]) return;
+
+              const userRef = child(dbRef, `users/${userId}`);
+
+              get(userRef).then(userSnapshot => {
+                const userSnapshotData = userSnapshot.val();
+                dispatch(setStoredUsers({newUsers: {userSnapshotData}}));
+              });
+              refs.push(userRef);
+            });
 
             chatsData[chatSnapshot.key] = data;
           }
