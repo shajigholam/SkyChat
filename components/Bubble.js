@@ -8,6 +8,7 @@ import {
   MenuTrigger,
 } from "react-native-popup-menu";
 import uuid from "react-native-uuid";
+import * as Clipboard from "expo-clipboard";
 
 const Bubble = props => {
   const {text, type} = props;
@@ -51,6 +52,14 @@ const Bubble = props => {
       break;
   }
 
+  const copyToClipboard = async text => {
+    try {
+      await Clipboard.setStringAsync(text);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={wrapperStyle}>
       <Container
@@ -65,7 +74,10 @@ const Bubble = props => {
           <Menu name={id.current} ref={menuRef}>
             <MenuTrigger />
             <MenuOptions>
-              <MenuOption text="option1" />
+              <MenuOption
+                text="Copy to clipboard"
+                onSelect={() => copyToClipboard(text)}
+              />
               <MenuOption text="option2" />
               <MenuOption text="option3" />
             </MenuOptions>
