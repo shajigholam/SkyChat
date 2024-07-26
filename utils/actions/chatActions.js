@@ -1,5 +1,14 @@
 import {getFirebaseApp} from "../firebaseHelper";
-import {child, getDatabase, push, ref, update} from "firebase/database";
+import {
+  child,
+  get,
+  getDatabase,
+  push,
+  ref,
+  remove,
+  set,
+  update,
+} from "firebase/database";
 
 export const createChat = async (loggedInUserId, chatData) => {
   // got the new chat data
@@ -61,10 +70,18 @@ export const starMessage = async (messageId, chatId, userId) => {
 
     if (snapshot.exists()) {
       // starred item exist -> unstar
-      console.log("unstartring");
+      // console.log("unstartring");
+      await remove(childRef);
     } else {
       // starred item does not exist -> star
-      console.log("starring");
+      // console.log("starring");
+      const starredMessageData = {
+        messageId,
+        chatId,
+        starredAt: new Date().toISOString(),
+      };
+
+      await set(childRef, starredMessageData);
     }
   } catch (error) {
     console.log(error);
