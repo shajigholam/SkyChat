@@ -117,7 +117,15 @@ const ChatScreen = props => {
                   const messageType = isOwnMessage
                     ? "myMessage"
                     : "theirMessage";
-                  return <Bubble type={messageType} text={message.text} />;
+                  return (
+                    <Bubble
+                      type={messageType}
+                      text={message.text}
+                      messageId={message.key}
+                      userId={userData.userId}
+                      chatId={chatId}
+                    />
+                  );
                 }}
               />
             )}

@@ -47,3 +47,26 @@ export const sendTextMessage = async (chatId, senderId, messageText) => {
     latestMessageText: messageText,
   });
 };
+
+export const starMessage = async (messageId, chatId, userId) => {
+  try {
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase(app));
+    const childRef = child(
+      dbRef,
+      `userStarredMessages/${userId}/${chatId}/${messageId}`
+    );
+
+    const snapshot = await get(childRef);
+
+    if (snapshot.exists()) {
+      // starred item exist -> unstar
+      console.log("unstartring");
+    } else {
+      // starred item does not exist -> star
+      console.log("starring");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
