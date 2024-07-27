@@ -95,6 +95,14 @@ const Bubble = props => {
         <View style={bubbleStyle}>
           <Text style={textStyle}>{text}</Text>
 
+          {
+            <View style={styles.timeContainer}>
+              {isStarred && (
+                <FontAwesome name="star" size={14} color={colors.textColor} />
+              )}
+            </View>
+          }
+
           <Menu name={id.current} ref={menuRef}>
             <MenuTrigger />
             <MenuOptions>
@@ -143,6 +151,10 @@ const styles = StyleSheet.create({
     fontFamily: "regular",
     letterSpacing: 0.3,
     fontSize: 16,
+  },
+  timeContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
 });
 
