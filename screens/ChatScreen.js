@@ -128,6 +128,7 @@ const ChatScreen = props => {
                       chatId={chatId}
                       date={message.sentAt}
                       setReply={() => setReplyingTo(message)}
+                      onCancel={() => setReplyingTo(null)}
                     />
                   );
                 }}
