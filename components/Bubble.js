@@ -11,6 +11,7 @@ import uuid from "react-native-uuid";
 import * as Clipboard from "expo-clipboard";
 import {Feather, FontAwesome} from "@expo/vector-icons";
 import {starMessage} from "../utils/actions/chatActions";
+import {useSelector} from "react-redux";
 
 const MenuItem = props => {
   const Icon = props.iconPack ?? Feather;
@@ -28,6 +29,10 @@ const MenuItem = props => {
 const Bubble = props => {
   const {text, type, messageId, chatId, userId} = props;
 
+  const starredMessages = useSelector(
+    state => state.messages.starredMessages[chatId] ?? {}
+  );
+
   const bubbleStyle = {...styles.container};
   const textStyle = {...styles.text};
   const wrapperStyle = {...styles.wrapperStyle};
@@ -37,6 +42,7 @@ const Bubble = props => {
   const id = useRef(uuid.v4()); // by using useRef the id tha has been generated in the 1st time round, will exist for the whole life time of the message element
 
   let Container = View;
+  let isUserMessage = false;
 
   switch (type) {
     case "system":
@@ -55,12 +61,13 @@ const Bubble = props => {
       bubbleStyle.backgroundColor = "#E7FED6";
       bubbleStyle.maxWidth = "90%";
       Container = TouchableWithoutFeedback;
+      isUserMessage = true;
       break;
     case "theirMessage":
       wrapperStyle.justifyContent = "flex-start";
       bubbleStyle.maxWidth = "90%";
       Container = TouchableWithoutFeedback;
-
+      isUserMessage = true;
       break;
 
     default:
@@ -74,6 +81,8 @@ const Bubble = props => {
       console.log(error);
     }
   };
+
+  const isStarred = isUserMessage && starredMessages[messageId] !== undefined;
 
   return (
     <View style={wrapperStyle}>
@@ -95,8 +104,8 @@ const Bubble = props => {
                 onSelect={() => copyToClipboard(text)}
               />
               <MenuItem
-                text="Star Message"
-                icon={"star-o"}
+                text={`${isStarred ? "Unstar" : "Star"} message`}
+                icon={`${isStarred ? "star" : "star-o"}`}
                 iconPack={FontAwesome}
                 onSelect={() => starMessage(messageId, chatId, userId)}
               />
