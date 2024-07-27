@@ -38,7 +38,7 @@ const MenuItem = props => {
 };
 
 const Bubble = props => {
-  const {text, type, messageId, chatId, userId, date} = props;
+  const {text, type, messageId, chatId, userId, date, setReply} = props;
 
   const starredMessages = useSelector(
     state => state.messages.starredMessages[chatId] ?? {}
@@ -134,6 +134,11 @@ const Bubble = props => {
                 icon={`${isStarred ? "star" : "star-o"}`}
                 iconPack={FontAwesome}
                 onSelect={() => starMessage(messageId, chatId, userId)}
+              />
+              <MenuItem
+                text="Reply"
+                icon="arrow-left-circle"
+                onSelect={setReply}
               />
             </MenuOptions>
           </Menu>
