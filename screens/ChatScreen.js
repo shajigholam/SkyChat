@@ -134,7 +134,6 @@ const ChatScreen = props => {
                       chatId={chatId}
                       date={message.sentAt}
                       setReply={() => setReplyingTo(message)}
-                      onCancel={() => setReplyingTo(null)}
                     />
                   );
                 }}
@@ -146,6 +145,7 @@ const ChatScreen = props => {
             <ReplyTo
               text={replyingTo.text}
               user={storedUsers[replyingTo.sentBy]}
+              onCancel={() => setReplyingTo(null)}
             />
           )}
         </ImageBackground>
