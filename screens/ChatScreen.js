@@ -20,6 +20,7 @@ import PageContainer from "../components/PageContainer";
 import Bubble from "../components/Bubble";
 import {createChat, sendTextMessage} from "../utils/actions/chatActions";
 import ReplyTo from "../components/ReplyTo";
+import {launchImagePicker} from "../utils/imagePickerHelper";
 
 const ChatScreen = props => {
   const [chatUsers, setChatUsers] = useState([]);
@@ -27,6 +28,7 @@ const ChatScreen = props => {
   const [chatId, setChatId] = useState(props.route?.params?.chatId);
   const [errorBannerText, setErrorBannerText] = useState("");
   const [replyingTo, setReplyingTo] = useState();
+  const [tempImageUri, setTempImageUri] = useState("");
 
   const userData = useSelector(state => state.auth.userData);
   const storedUsers = useSelector(state => state.users.storedUsers);
@@ -96,6 +98,17 @@ const ChatScreen = props => {
     }
   }, [messageText, chatId]);
 
+  const pickImage = useCallback(async () => {
+    try {
+      const tempUri = await launchImagePicker();
+      if (!tempUri) return;
+
+      setTempImageUri(tempUri);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [tempImageUri]);
+
   return (
     <SafeAreaView edges={["right", "left", "bottom"]} style={styles.container}>
       <KeyboardAvoidingView
@@ -155,7 +168,7 @@ const ChatScreen = props => {
         </ImageBackground>
 
         <View style={styles.inputContainer}>
-          <TouchableOpacity style={styles.mediaButton}>
+          <TouchableOpacity style={styles.mediaButton} onPress={pickImage}>
             <Feather name="plus-circle" size={24} color={colors.blue} />
           </TouchableOpacity>
 
