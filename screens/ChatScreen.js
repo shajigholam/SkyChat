@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Image,
 } from "react-native";
 import {Feather} from "@expo/vector-icons";
 import backgroundImage from "../assets/images/wallpaper.jpeg";
@@ -21,6 +22,7 @@ import Bubble from "../components/Bubble";
 import {createChat, sendTextMessage} from "../utils/actions/chatActions";
 import ReplyTo from "../components/ReplyTo";
 import {launchImagePicker} from "../utils/imagePickerHelper";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const ChatScreen = props => {
   const [chatUsers, setChatUsers] = useState([]);
@@ -193,6 +195,31 @@ const ChatScreen = props => {
               <Feather name="send" size={20} color={"white"} />
             </TouchableOpacity>
           )}
+
+          <AwesomeAlert
+            show={tempImageUri !== ""}
+            title="Send image?"
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={false}
+            showCancelButton={true}
+            showConfirmButton={true}
+            cancelText="Cancel"
+            confirmText="Send image"
+            confirmButtonColor={colors.primary}
+            cancelButtonColor={colors.red}
+            titleStyle={styles.popupTitleStyle}
+            onCancelPressed={() => setTempImageUri("")}
+            onConfirmPressed={() => console.log("upload")}
+            onDismiss={() => setTempImageUri("")}
+            customView={
+              <View>
+                <Image
+                  source={{uri: tempImageUri}}
+                  style={{width: 200, height: 200}}
+                />
+              </View>
+            }
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -233,6 +260,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.blue,
     borderRadius: 50,
     padding: 8,
+  },
+  popupTitleStyle: {
+    fontFamily: "medium",
+    letterSpacing: 0.3,
+    color: colors.textColor,
   },
 });
 
