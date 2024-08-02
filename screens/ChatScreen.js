@@ -12,6 +12,7 @@ import {
   Platform,
   FlatList,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import {Feather} from "@expo/vector-icons";
 import backgroundImage from "../assets/images/wallpaper.jpeg";
@@ -21,7 +22,7 @@ import PageContainer from "../components/PageContainer";
 import Bubble from "../components/Bubble";
 import {createChat, sendTextMessage} from "../utils/actions/chatActions";
 import ReplyTo from "../components/ReplyTo";
-import {launchImagePicker} from "../utils/imagePickerHelper";
+import {launchImagePicker, uploadImageAync} from "../utils/imagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 const ChatScreen = props => {
@@ -31,6 +32,7 @@ const ChatScreen = props => {
   const [errorBannerText, setErrorBannerText] = useState("");
   const [replyingTo, setReplyingTo] = useState();
   const [tempImageUri, setTempImageUri] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const userData = useSelector(state => state.auth.userData);
   const storedUsers = useSelector(state => state.users.storedUsers);
@@ -110,6 +112,21 @@ const ChatScreen = props => {
       console.log(error);
     }
   }, [tempImageUri]);
+
+  const uploadImage = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const uploadUrl = await uploadImageAync(tempImageUri, true);
+      setIsLoading(false);
+      //send image
+
+      setTempImageUri("");
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  }, [isLoading, tempImageUri]);
 
   return (
     <SafeAreaView edges={["right", "left", "bottom"]} style={styles.container}>
@@ -209,14 +226,19 @@ const ChatScreen = props => {
             cancelButtonColor={colors.red}
             titleStyle={styles.popupTitleStyle}
             onCancelPressed={() => setTempImageUri("")}
-            onConfirmPressed={() => console.log("upload")}
+            onConfirmPressed={uploadImage}
             onDismiss={() => setTempImageUri("")}
             customView={
               <View>
-                <Image
-                  source={{uri: tempImageUri}}
-                  style={{width: 200, height: 200}}
-                />
+                {isLoading && (
+                  <ActivityIndicator size="small" color={colors.primary} />
+                )}
+                {!isLoading && tempImageUri !== "" && (
+                  <Image
+                    source={{uri: tempImageUri}}
+                    style={{width: 200, height: 200}}
+                  />
+                )}
               </View>
             }
           />

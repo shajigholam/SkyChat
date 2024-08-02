@@ -26,7 +26,7 @@ export const launchImagePicker = async () => {
   }
 };
 
-export const uploadImageAync = async uri => {
+export const uploadImageAync = async (uri, isChatImage = false) => {
   const app = getFirebaseApp();
 
   const blob = await new Promise((resolve, reject) => {
@@ -44,7 +44,7 @@ export const uploadImageAync = async uri => {
     xhr.send();
   });
 
-  const pathFolder = "profilePics";
+  const pathFolder = isChatImage ? "chatImages" : "profilePics";
 
   const storageRef = ref(getStorage(app), `${pathFolder}/${uuid.v4()}`);
 
