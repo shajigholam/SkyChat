@@ -26,7 +26,11 @@ import {
   sendTextMessage,
 } from "../utils/actions/chatActions";
 import ReplyTo from "../components/ReplyTo";
-import {launchImagePicker, uploadImageAync} from "../utils/imagePickerHelper";
+import {
+  launchImagePicker,
+  openCamera,
+  uploadImageAync,
+} from "../utils/imagePickerHelper";
 import AwesomeAlert from "react-native-awesome-alerts";
 
 const ChatScreen = props => {
@@ -109,6 +113,17 @@ const ChatScreen = props => {
   const pickImage = useCallback(async () => {
     try {
       const tempUri = await launchImagePicker();
+      if (!tempUri) return;
+
+      setTempImageUri(tempUri);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [tempImageUri]);
+
+  const takePhoto = useCallback(async () => {
+    try {
+      const tempUri = await openCamera();
       if (!tempUri) return;
 
       setTempImageUri(tempUri);
@@ -219,7 +234,7 @@ const ChatScreen = props => {
           />
 
           {messageText === "" && (
-            <TouchableOpacity style={styles.mediaButton}>
+            <TouchableOpacity style={styles.mediaButton} onPress={takePhoto}>
               <Feather name="camera" size={24} color={colors.blue} />
             </TouchableOpacity>
           )}
