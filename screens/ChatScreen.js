@@ -121,22 +121,31 @@ const ChatScreen = props => {
     setIsLoading(true);
 
     try {
+      let id = chatId;
+
+      if (!id) {
+        // no chat id(it's the 1st time). create the chat
+        id = await createChat(userData.userId, props.route.params.newChatData);
+        setChatId(id);
+      }
+
       const uploadUrl = await uploadImageAync(tempImageUri, true);
       setIsLoading(false);
       //send image
       await sendImage(
-        chatId,
+        id,
         userData.userId,
         uploadUrl,
         replyingTo && replyingTo.key
       );
+      setReplyingTo(null);
 
-      setTempImageUri("");
+      setTimeout(() => setTempImageUri(""), 500);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
     }
-  }, [isLoading, tempImageUri]);
+  }, [isLoading, tempImageUri, chatId]);
 
   return (
     <SafeAreaView edges={["right", "left", "bottom"]} style={styles.container}>
@@ -180,6 +189,7 @@ const ChatScreen = props => {
                         message.replyTo &&
                         chatMessages.find(i => i.key === message.replyTo)
                       }
+                      imageUrl={message.imageUrl}
                     />
                   );
                 }}
