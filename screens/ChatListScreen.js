@@ -1,11 +1,12 @@
 import react, {useEffect} from "react";
-import {View, Text, StyleSheet, Button, FlatList} from "react-native";
+import {View, Text, StyleSheet, Button, FlatList, TouchableOpacity} from "react-native";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import {useSelector} from "react-redux";
 import DataItem from "../components/DataItem";
 import PageContainer from "../components/PageContainer";
 import PageTitle from "../components/PageTitle";
+import colors from "../constants/colors";
 
 const ChatListScreen = props => {
   const selectedUser = props.route?.params?.selectedUserId;
@@ -54,6 +55,12 @@ const ChatListScreen = props => {
     <PageContainer>
       <PageTitle text="Chats" />
 
+      <View>
+        <TouchableOpacity onPress={() => props.navigation.navigate("NewChat", {isGroupChat: true})}>
+          <Text style={styles.newGroupText}>New Group</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={userChats}
         renderItem={itemData => {
@@ -91,6 +98,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  newGroupText:{
+    color: colors.blue,
+    fontSize: 17,
+    marginBottom: 5
+  }
 });
 
 export default ChatListScreen;
