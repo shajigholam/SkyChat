@@ -26,12 +26,13 @@ const NewChatScreen = props => {
   const [users, setUsers] = useState();
   const [noResultsFound, setNoResultsFound] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [chatName, setChatName] = useState("")
+  const [chatName, setChatName] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const userData = useSelector(state => state.auth.userData);
 
   const isGroupChat = props.route.params && props.route.params.isGroupChat;
-  const isGroupChatDisabled = chatName === "";
+  const isGroupChatDisabled = selectedUsers.length === 0 || chatName === "";
 
   useEffect(() => {
     props.navigation.setOptions({
@@ -64,7 +65,7 @@ const NewChatScreen = props => {
       },
       headerTitle: isGroupChat ? "Add participants" : "New Chat",
     });
-  }, [chatName]);
+  }, [chatName, selectedUsers]);
 
   useEffect(() => {
     const delaysearch = setTimeout(async () => {
@@ -95,7 +96,14 @@ const NewChatScreen = props => {
   }, [searchTerm]);
 
   const userPressed = userId => {
-    props.navigation.navigate("ChatList", {selectedUserId: userId});
+    if (isGroupChat) {
+      const newSelectedUsers = selectedUsers.includes(userId) ? selectedUsers.filter(id => id !== userId) : selectedUsers.concat(userId);
+
+      setSelectedUsers(newSelectedUsers);
+    }
+    else {
+      props.navigation.navigate("ChatList", {selectedUserId: userId});
+    }
   };
 
   return (
@@ -142,6 +150,7 @@ const NewChatScreen = props => {
                 image={userData.profilePicture}
                 onPress={() => userPressed(userId)}
                 type={isGroupChat ? "checkbox" : ""}
+                isChecked={selectedUsers.includes(userId)}
               />
             );
           }}
