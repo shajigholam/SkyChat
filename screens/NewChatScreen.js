@@ -133,7 +133,13 @@ const NewChatScreen = props => {
               renderItem={itemData => {
                 const userId = itemData.item;
                 const userData = storedUsers[userId];
-                return <ProfileImage size={40} uri={userData.profilePicture} />;
+                return (
+                  <ProfileImage
+                    size={40}
+                    uri={userData.profilePicture}
+                    onPress={() => userPressed(userId)}
+                  />
+                );
               }}
             />
           </View>

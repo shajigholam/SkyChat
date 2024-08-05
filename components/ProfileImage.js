@@ -59,10 +59,10 @@ const ProfileImage = props => {
     }
   };
 
-  const Container = showEditButton ? TouchableOpacity : View;
+  const Container = props.onPress || showEditButton ? TouchableOpacity : View;
 
   return (
-    <Container onPress={pickImage}>
+    <Container onPress={props.onPress || pickImage}>
       {isLoading ? (
         <View
           height={props.size}
