@@ -60,7 +60,12 @@ const NewChatScreen = props => {
                 disabled={isGroupChatDisabled}
                 color={isGroupChatDisabled ? colors.lightGrey : undefined}
                 style={{marginLeft: 15}}
-                onPress={() => {}}
+                onPress={() => {
+                  props.navigation.navigate("ChatList", {
+                    selectedUsers: selectedUsers,
+                    chatName,
+                  });
+                }}
               />
             )}
           </HeaderButtons>

@@ -1,5 +1,12 @@
 import react, {useEffect} from "react";
-import {View, Text, StyleSheet, Button, FlatList, TouchableOpacity} from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../components/CustomHeaderButton";
 import {useSelector} from "react-redux";
@@ -10,6 +17,8 @@ import colors from "../constants/colors";
 
 const ChatListScreen = props => {
   const selectedUser = props.route?.params?.selectedUserId;
+  const selectedUserList = props.route?.params?.selectedUsers;
+  const chatName = props.route?.params?.chatName;
 
   const userData = useSelector(state => state.auth.userData);
   const storedUsers = useSelector(state => state.users.storedUsers);
@@ -40,13 +49,26 @@ const ChatListScreen = props => {
   }, []);
 
   useEffect(() => {
-    if (!selectedUser) {
+    if (!selectedUser && !selectedUserList) {
       return;
     }
 
-    const chatUsers = [selectedUser, userData.userId];
+    // const chatUsers = [selectedUser, userData.userId];
+    const chatUsers = selectedUserList || [selectedUser];
+    // add ourselves to the array if it doesn't already exist(just to make sure we are part of this only for one time)
+    if (!chatUsers.includes(userData.userId)) {
+      chatUsers.push(userData.userId);
+    }
 
-    const navigationProps = {newChatData: {users: chatUsers}};
+    const navigationProps = {
+      newChatData: {
+        users: chatUsers,
+        isGroupChat: selectedUserList !== undefined,
+      },
+    };
+    if (chatName) {
+      navigationProps.chatName = chatName;
+    }
 
     props.navigation.navigate("ChatScreen", navigationProps);
   }, [props.route?.params]);
@@ -56,7 +78,11 @@ const ChatListScreen = props => {
       <PageTitle text="Chats" />
 
       <View>
-        <TouchableOpacity onPress={() => props.navigation.navigate("NewChat", {isGroupChat: true})}>
+        <TouchableOpacity
+          onPress={() =>
+            props.navigation.navigate("NewChat", {isGroupChat: true})
+          }
+        >
           <Text style={styles.newGroupText}>New Group</Text>
         </TouchableOpacity>
       </View>
@@ -98,11 +124,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  newGroupText:{
+  newGroupText: {
     color: colors.blue,
     fontSize: 17,
-    marginBottom: 5
-  }
+    marginBottom: 5,
+  },
 });
 
 export default ChatListScreen;
