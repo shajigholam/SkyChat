@@ -31,7 +31,9 @@ import {
   openCamera,
   uploadImageAync,
 } from "../utils/imagePickerHelper";
+import CustomHeaderButton from "../components/CustomHeaderButton";
 import AwesomeAlert from "react-native-awesome-alerts";
+import {HeaderButtons, Item} from "react-navigation-header-buttons";
 
 const ChatScreen = props => {
   const [chatUsers, setChatUsers] = useState([]);
@@ -85,6 +87,19 @@ const ChatScreen = props => {
   useEffect(() => {
     props.navigation.setOptions({
       headerTitle: title,
+      headerRight: () => {
+        return (
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            {chatId && (
+              <Item
+                title="Chat settings"
+                iconName="settings-outline"
+                onPress={() => {}}
+              />
+            )}
+          </HeaderButtons>
+        );
+      },
     });
 
     setChatUsers(chatData.users);
