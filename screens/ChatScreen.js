@@ -78,9 +78,13 @@ const ChatScreen = props => {
     );
   };
 
+  // ue chatname for the title, if it doen't exist use the func to ...
+  const title = chatData.chatName ?? getChatTitleFromName();
+  // console.log(chatData.chatName);
+
   useEffect(() => {
     props.navigation.setOptions({
-      headerTitle: getChatTitleFromName(),
+      headerTitle: title,
     });
 
     setChatUsers(chatData.users);
@@ -96,7 +100,7 @@ const ChatScreen = props => {
         setChatId(id);
       }
       await sendTextMessage(
-        chatId,
+        id,
         userData.userId,
         messageText,
         replyingTo && replyingTo.key
