@@ -6,6 +6,7 @@ import ProfileImage from "../components/ProfileImage";
 import PageTitle from "../components/PageTitle";
 import colors from "../constants/colors";
 import {getUserChats} from "../utils/actions/userActions";
+import DataItem from "../components/DataItem";
 
 const ContactScreen = props => {
   const storedUsers = useSelector(state => state.users.storedUsers);
@@ -13,7 +14,7 @@ const ContactScreen = props => {
 
   const storedChats = useSelector(state => state.chats.chatsData);
   const [commonChats, setCommonChats] = useState([]);
-  console.log(commonChats);
+  //   console.log(commonChats);
 
   useEffect(() => {
     const getCommonUserChats = async () => {
@@ -40,6 +41,25 @@ const ContactScreen = props => {
           <Text style={styles.about}>{currentUser.about}</Text>
         )}
       </View>
+
+      {commonChats.length > 0 && (
+        <>
+          <Text style={styles.heading}>
+            {commonChats.length} {commonChats.length === 1 ? "Group" : "Groups"}
+            in Common
+          </Text>
+          {commonChats.map(cid => {
+            const chatData = storedChats[cid];
+            return (
+              <DataItem
+                key={cid}
+                title={chatData.chatName}
+                subTitle={chatData.latestMessageText}
+              />
+            );
+          })}
+        </>
+      )}
     </PageContainer>
   );
 };
@@ -55,6 +75,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.3,
     color: colors.grey,
+  },
+  heading: {
+    fontFamily: "bold",
+    letterSpacing: 0.3,
+    color: colors.textColor,
+    marginVertical: 8,
   },
 });
 
