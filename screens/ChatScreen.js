@@ -203,6 +203,10 @@ const ChatScreen = props => {
                   const messageType = isOwnMessage
                     ? "myMessage"
                     : "theirMessage";
+                  const sender = message.sentBy && storedUsers[message.sentBy];
+                  const name =
+                    sender && `${sender.firstName} ${sender.lastName}`;
+
                   return (
                     <Bubble
                       type={messageType}
@@ -211,6 +215,9 @@ const ChatScreen = props => {
                       userId={userData.userId}
                       chatId={chatId}
                       date={message.sentAt}
+                      name={
+                        !chatData.isGroupChat || isOwnMessage ? undefined : name
+                      }
                       setReply={() => setReplyingTo(message)}
                       replyingTo={
                         message.replyTo &&
