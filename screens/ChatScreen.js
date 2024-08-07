@@ -97,7 +97,9 @@ const ChatScreen = props => {
                 onPress={() =>
                   chatData.isGroupChat
                     ? props.navigation.navigate("")
-                    : props.navigation.navigate("Contact")
+                    : props.navigation.navigate("Contact", {
+                        uid: chatUsers.find(uid => uid !== userData.userId),
+                      })
                 }
               />
             )}
