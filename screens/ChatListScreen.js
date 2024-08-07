@@ -55,19 +55,33 @@ const ChatListScreen = props => {
 
     // const chatUsers = [selectedUser, userData.userId];
     const chatUsers = selectedUserList || [selectedUser];
-    // add ourselves to the array if it doesn't already exist(just to make sure we are part of this only for one time)
-    if (!chatUsers.includes(userData.userId)) {
-      chatUsers.push(userData.userId);
+
+    let chatData;
+    let navigationProps;
+
+    if (selectedUser) {
+      chatData = userChats.find(
+        cd => !cd.isGroupChat && cd.users.includes(selectedUser)
+      );
     }
 
-    const navigationProps = {
-      newChatData: {
-        users: chatUsers,
-        isGroupChat: selectedUserList !== undefined,
-      },
-    };
-    if (chatName) {
-      navigationProps.chatName = chatName;
+    if (chatData) {
+      navigationProps = {chatId: chatData.key};
+    } else {
+      // add ourselves to the array if it doesn't already exist(just to make sure we are part of this only for one time)
+      if (!chatUsers.includes(userData.userId)) {
+        chatUsers.push(userData.userId);
+      }
+
+      navigationProps = {
+        newChatData: {
+          users: chatUsers,
+          isGroupChat: selectedUserList !== undefined,
+        },
+      };
+      if (chatName) {
+        navigationProps.chatName = chatName;
+      }
     }
 
     props.navigation.navigate("ChatScreen", navigationProps);
