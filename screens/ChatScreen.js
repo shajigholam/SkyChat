@@ -109,7 +109,7 @@ const ChatScreen = props => {
     });
 
     setChatUsers(chatData.users);
-  }, [chatUsers]);
+  }, [chatUsers, title]);
 
   const sendMessage = useCallback(async () => {
     try {
