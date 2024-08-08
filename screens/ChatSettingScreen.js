@@ -1,13 +1,21 @@
 import react, {useCallback, useReducer, useState} from "react";
-import {View, Text, StyleSheet, ScrollView} from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from "react-native";
 import {useSelector} from "react-redux";
 import PageContainer from "../components/PageContainer";
 import PageTitle from "../components/PageTitle";
 import ProfileImage from "../components/ProfileImage";
 import Input from "../components/Input";
 import {reducer} from "../utils/reducers/formReducer";
-import {validateLength} from "../utils/validationConstraints";
 import {updateChatData} from "../utils/actions/chatActions";
+import SubmitButton from "../components/SubmitButton";
+import colors from "../constants/colors";
+import {validateInput} from "../utils/actions/formActions";
 
 const ChatSettingScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +35,7 @@ const ChatSettingScreen = props => {
 
   const inputChangeHandler = useCallback(
     (inputId, inputValue) => {
-      const result = validateLength(inputId, inputValue);
+      const result = validateInput(inputId, inputValue);
       dispatchFormState({
         inputId: inputId,
         validationResult: result,
@@ -52,7 +60,7 @@ const ChatSettingScreen = props => {
     } finally {
       setIsLoading(false);
     }
-  }, [formState, dispatch]);
+  }, [formState]);
 
   const hasChanges = () => {
     const currentValues = formState.inputValues;
@@ -70,7 +78,6 @@ const ChatSettingScreen = props => {
           chatId={chatId}
           userId={userData.userId}
           uri={chatData.chatImage}
-          onInputChanged={inputChangeHandler}
         />
 
         <Input
@@ -79,7 +86,21 @@ const ChatSettingScreen = props => {
           autoCapitalize="none"
           initialValue={chatData.chatName}
           allowEmpty={false}
+          onInputChanged={inputChangeHandler}
+          errorText={formState.inputValidities["chatName"]}
         />
+        {isLoading ? (
+          <ActivityIndicator size={"small"} color={colors.primary} />
+        ) : (
+          hasChanges() && (
+            <SubmitButton
+              title="Save changes"
+              color={colors.primary}
+              onPress={saveHandler}
+              disabled={!formState.formIsValid}
+            />
+          )
+        )}
       </ScrollView>
     </PageContainer>
   );
