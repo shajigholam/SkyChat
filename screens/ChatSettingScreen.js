@@ -16,6 +16,7 @@ import {updateChatData} from "../utils/actions/chatActions";
 import SubmitButton from "../components/SubmitButton";
 import colors from "../constants/colors";
 import {validateInput} from "../utils/actions/formActions";
+import DataItem from "../components/DataItem";
 
 const ChatSettingScreen = props => {
   const [isLoading, setIsLoading] = useState(false);
@@ -90,6 +91,13 @@ const ChatSettingScreen = props => {
           errorText={formState.inputValidities["chatName"]}
         />
 
+        <View style={styles.sectionContainer}>
+          <Text style={styles.heading}>
+            {chatData.users.length} Participants
+          </Text>
+          <DataItem title="Add users" icon="plus" />
+        </View>
+
         {showSuccessMessage && <Text>Saved!</Text>}
 
         {isLoading ? (
@@ -118,6 +126,16 @@ const styles = StyleSheet.create({
   scrollView: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  sectionContainer: {
+    width: "100%",
+    marginTop: 10,
+  },
+  heading: {
+    marginVertical: 8,
+    color: colors.textColor,
+    fontFamily: "bold",
+    letterSpacing: 0.3,
   },
 });
 
