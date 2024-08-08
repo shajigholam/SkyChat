@@ -19,7 +19,13 @@ const DataItem = props => {
           </View>
         )}
         <View style={styles.textContainer}>
-          <Text numberOfLines={1} style={styles.title}>
+          <Text
+            numberOfLines={1}
+            style={{
+              ...styles.title,
+              ...{color: type === "button" ? colors.primary : colors.textColor},
+            }}
+          >
             {title}
           </Text>
           {subTitle && (
