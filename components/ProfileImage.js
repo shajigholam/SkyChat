@@ -15,6 +15,7 @@ import {launchImagePicker, uploadImageAync} from "../utils/imagePickerHelper";
 import {updateSignedInUserData} from "../utils/actions/authActions";
 import {useDispatch} from "react-redux";
 import {updateLoggedInUserData} from "../store/authSlice";
+import {updateChatData} from "../utils/actions/chatActions";
 
 const ProfileImage = props => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const ProfileImage = props => {
     props.showRemoveButton && props.showRemoveButton === true;
 
   const userId = props.userId;
+  const chatId = props.chatId; //chat id passed from the chatsetting screen for the gp chat
 
   const pickImage = async () => {
     try {
@@ -39,7 +41,7 @@ const ProfileImage = props => {
 
       // upload the image
       setIsLoading(true);
-      const uploadUrl = await uploadImageAync(tempUri);
+      const uploadUrl = await uploadImageAync(tempUri, chatId !== undefined);
       setIsLoading(false);
       // console.log(uploadUrl);
 
@@ -47,11 +49,15 @@ const ProfileImage = props => {
         throw new Error("Could not upload image");
       }
 
-      const newData = {profilePicture: uploadUrl};
+      if (chatId) {
+        await updateChatData(chatId, userId, {chatImage: uploadUrl});
+      } else {
+        const newData = {profilePicture: uploadUrl};
 
-      await updateSignedInUserData(userId, newData);
+        await updateSignedInUserData(userId, newData);
 
-      dispatch(updateLoggedInUserData({newData: newData}));
+        dispatch(updateLoggedInUserData({newData: newData}));
+      }
 
       // set the image
       setImage({uri: uploadUrl});
