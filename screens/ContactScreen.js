@@ -59,6 +59,7 @@ const ContactScreen = props => {
                 onPress={() => {
                   props.navigation.push("ChatScreen", {chatId: cid});
                 }}
+                image={chatData.chatImage}
               />
             );
           })}
