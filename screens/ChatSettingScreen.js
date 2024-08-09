@@ -108,7 +108,7 @@ const ChatSettingScreen = props => {
                 type={uid !== userData.userId && "link"}
                 onPress={() =>
                   uid !== userData.userId &&
-                  props.navigation.navigate("Contact", {uid})
+                  props.navigation.navigate("Contact", {uid, chatId})
                 }
               />
             );

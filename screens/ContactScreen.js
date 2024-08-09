@@ -7,6 +7,7 @@ import PageTitle from "../components/PageTitle";
 import colors from "../constants/colors";
 import {getUserChats} from "../utils/actions/userActions";
 import DataItem from "../components/DataItem";
+import SubmitButton from "../components/SubmitButton";
 
 const ContactScreen = props => {
   const storedUsers = useSelector(state => state.users.storedUsers);
@@ -15,6 +16,9 @@ const ContactScreen = props => {
   const storedChats = useSelector(state => state.chats.chatsData);
   const [commonChats, setCommonChats] = useState([]);
   //   console.log(commonChats);
+
+  const chatId = props.route.params.chatId;
+  const chatData = chatId && storedChats[chatId];
 
   useEffect(() => {
     const getCommonUserChats = async () => {
@@ -45,7 +49,7 @@ const ContactScreen = props => {
       {commonChats.length > 0 && (
         <>
           <Text style={styles.heading}>
-            {commonChats.length} {commonChats.length === 1 ? "Group" : "Groups"}
+            {commonChats.length} {commonChats.length === 1 ? "Group" : "Groups"}{" "}
             in Common
           </Text>
           {commonChats.map(cid => {
@@ -64,6 +68,9 @@ const ContactScreen = props => {
             );
           })}
         </>
+      )}
+      {chatData && chatData.isGroupChat && (
+        <SubmitButton title="Remove from chat" color={colors.red} />
       )}
     </PageContainer>
   );
