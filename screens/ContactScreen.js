@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {StyleSheet, Text, View} from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
+import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
 import {useSelector} from "react-redux";
 import PageContainer from "../components/PageContainer";
 import ProfileImage from "../components/ProfileImage";
@@ -10,6 +10,7 @@ import DataItem from "../components/DataItem";
 import SubmitButton from "../components/SubmitButton";
 
 const ContactScreen = props => {
+  const [isLoading, setIsLoading] = useState(false);
   const storedUsers = useSelector(state => state.users.storedUsers);
   const currentUser = storedUsers[props.route.params.uid];
 
@@ -31,6 +32,19 @@ const ContactScreen = props => {
     };
     getCommonUserChats();
   }, []);
+
+  const removeFromChat = useCallback(() => {
+    try {
+      setIsLoading(true);
+      // remove the user
+
+      props.navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [props.navigation, isLoading]);
 
   return (
     <PageContainer>
@@ -69,9 +83,17 @@ const ContactScreen = props => {
           })}
         </>
       )}
-      {chatData && chatData.isGroupChat && (
-        <SubmitButton title="Remove from chat" color={colors.red} />
-      )}
+      {chatData &&
+        chatData.isGroupChat &&
+        (isLoading ? (
+          <ActivityIndicator size="small" color={colors.primary} />
+        ) : (
+          <SubmitButton
+            title="Remove from chat"
+            color={colors.red}
+            onPress={removeFromChat}
+          />
+        ))}
     </PageContainer>
   );
 };
