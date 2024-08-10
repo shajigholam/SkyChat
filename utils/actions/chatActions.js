@@ -9,6 +9,7 @@ import {
   set,
   update,
 } from "firebase/database";
+import {deleteUserChat, getUserChats} from "./userActions";
 
 export const createChat = async (loggedInUserId, chatData) => {
   // got the new chat data
@@ -136,4 +137,14 @@ export const removeUserFromChat = async (
   await updateChatData(chatData.key, userLoggedInData.userId, {
     users: newUsers,
   });
+  // get all the chats of the user that is gonna be removed and delete that gp chat from his/her chat list(userChats node)
+  const userChats = getUserChats(UserToRemoveId);
+
+  for (const key in userChats) {
+    const currentChatId = userChats[key]; // to get the value(which is the chatId, not the key itself)
+    if (currentChatId === chatData.key) {
+      await deleteUserChat(UserToRemoveId, key);
+      break;
+    }
+  }
 };
