@@ -114,7 +114,18 @@ const ChatSettingScreen = props => {
           <Text style={styles.heading}>
             {chatData.users.length} Participants
           </Text>
-          <DataItem title="Add users" icon="plus" type="button" />
+          <DataItem
+            title="Add users"
+            icon="plus"
+            type="button"
+            onPress={() =>
+              props.navigation.navigate("NewChat", {
+                isGroupChat: true,
+                existingUsers: chatData.users,
+                chatId,
+              })
+            }
+          />
           {chatData.users.slice(0, 4).map(uid => {
             const currentUser = storedUsers[uid];
             return (
