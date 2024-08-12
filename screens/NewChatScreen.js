@@ -70,6 +70,7 @@ const NewChatScreen = props => {
                   props.navigation.navigate(screenName, {
                     selectedUsers: selectedUsers,
                     chatName,
+                    chatId,
                   });
                 }}
               />

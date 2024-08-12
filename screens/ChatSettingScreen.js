@@ -1,4 +1,4 @@
-import react, {useCallback, useReducer, useState} from "react";
+import react, {useCallback, useEffect, useReducer, useState} from "react";
 import {
   View,
   Text,
@@ -34,6 +34,26 @@ const ChatSettingScreen = props => {
   };
 
   const [formState, dispatchFormState] = useReducer(reducer, initialState);
+
+  const selectedUsers = props.route.params && props.route.params.selectedUsers;
+  useEffect(() => {
+    if (!selectedUsers) {
+      return;
+    }
+
+    const selectedUserData = [];
+    selectedUsers.forEach(uid => {
+      if (uid === userData.userId) {
+        return;
+      }
+      if (!storedUsers[uid]) {
+        console.log("No user found in the database");
+        return;
+      }
+      selectedUserData.push(storedUsers[uid]);
+    });
+    console.log(selectedUserData);
+  }, [selectedUsers]);
 
   const inputChangeHandler = useCallback(
     (inputId, inputValue) => {
