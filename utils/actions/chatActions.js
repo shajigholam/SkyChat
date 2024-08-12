@@ -9,7 +9,7 @@ import {
   set,
   update,
 } from "firebase/database";
-import {deleteUserChat, getUserChats} from "./userActions";
+import {addUserChat, deleteUserChat, getUserChats} from "./userActions";
 
 export const createChat = async (loggedInUserId, chatData) => {
   // got the new chat data
@@ -162,4 +162,18 @@ export const removeUserFromChat = async (
       : `${userLoggedInData.firstName} ${userLoggedInData.lastName} removed ${UserToRemoveData.firstName} ${UserToRemoveData.lastName} from the chat`;
 
   await sendInfoMessage(chatData.key, userLoggedInData.userId, messageText);
+};
+
+export const addUsersToChat = (userLoggedInData, usersToAddData, chatData) => {
+  const existingUsers = Object.values(chatData.users);
+  const newUsers = [];
+
+  usersToAddData.forEach(userToAdd => {
+    const userToAddId = userToAdd.userId;
+    if (existingUsers.includes(userToAdd)) return;
+
+    newUsers.push(userToAddId);
+
+    addUserChat(userToAddId, chatData.key);
+  });
 };

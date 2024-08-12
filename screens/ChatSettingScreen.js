@@ -12,7 +12,11 @@ import PageTitle from "../components/PageTitle";
 import ProfileImage from "../components/ProfileImage";
 import Input from "../components/Input";
 import {reducer} from "../utils/reducers/formReducer";
-import {removeUserFromChat, updateChatData} from "../utils/actions/chatActions";
+import {
+  addUsersToChat,
+  removeUserFromChat,
+  updateChatData,
+} from "../utils/actions/chatActions";
 import SubmitButton from "../components/SubmitButton";
 import colors from "../constants/colors";
 import {validateInput} from "../utils/actions/formActions";
@@ -52,7 +56,8 @@ const ChatSettingScreen = props => {
       }
       selectedUserData.push(storedUsers[uid]);
     });
-    console.log(selectedUserData);
+    // console.log(selectedUserData);
+    addUsersToChat(userData, selectedUserData, chatData);
   }, [selectedUsers]);
 
   const inputChangeHandler = useCallback(
