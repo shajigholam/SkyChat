@@ -69,7 +69,7 @@ const ChatScreen = props => {
   // console.log(chatMessages);
 
   const chatData =
-    (chatId && storedChats[chatId]) || props.route?.params?.newChatData;
+    (chatId && storedChats[chatId]) || props.route?.params?.newChatData || {};
   // console.log(chatData);
   const getChatTitleFromName = () => {
     const otherUserId = chatUsers.find(uid => uid !== userData.userId);
@@ -81,12 +81,16 @@ const ChatScreen = props => {
   };
 
   // ue chatname for the title, if it doen't exist use the func to ...
-  const title = chatData.chatName ?? getChatTitleFromName();
+  // const title = chatData.chatName ?? getChatTitleFromName();
   // console.log(chatData.chatName);
 
   useEffect(() => {
+    if (!chatData) {
+      return;
+    }
+
     props.navigation.setOptions({
-      headerTitle: title,
+      headerTitle: chatData.chatName ?? getChatTitleFromName(),
       headerRight: () => {
         return (
           <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
@@ -109,7 +113,7 @@ const ChatScreen = props => {
     });
 
     setChatUsers(chatData.users);
-  }, [chatUsers, title]);
+  }, [chatUsers]);
 
   const sendMessage = useCallback(async () => {
     try {
@@ -221,9 +225,15 @@ const ChatScreen = props => {
                 renderItem={itemData => {
                   const message = itemData.item;
                   const isOwnMessage = message.sentBy === userData.userId;
-                  const messageType = isOwnMessage
-                    ? "myMessage"
-                    : "theirMessage";
+
+                  let messageType;
+                  if (message.type && message.type === "info") {
+                    messageType = "info";
+                  } else if (isOwnMessage) {
+                    messageType = "myMessage";
+                  } else {
+                    messageType = "theirMessage";
+                  }
                   const sender = message.sentBy && storedUsers[message.sentBy];
                   const name =
                     sender && `${sender.firstName} ${sender.lastName}`;

@@ -129,9 +129,11 @@ const MainNavigator = props => {
         //onValue listens for changes while get execute one time
         onValue(chatRef, chatSnapshot => {
           chatsFoundCount++;
-          // console.log(chatSnapshot.val());
+
           const data = chatSnapshot.val();
-          if (data) {
+          if (data && data.users.includes(userData.userId)) {
+            // if you are not part of the gp chat anymore just return and doesn't show the chat gp in the chat list
+            // if (!data.users.includes(userData.userId)) return;
             data.key = chatSnapshot.key; //adding a key prop(chat id) to data
 
             data.users.forEach(userId => {
@@ -196,3 +198,84 @@ const MainNavigator = props => {
 };
 
 export default MainNavigator;
+
+// in case
+
+// useEffect(() => {
+//   console.log("Subscribing to firebase listeners");
+
+//   const app = getFirebaseApp();
+//   const dbRef = ref(getDatabase(app));
+//   const userChatsRef = child(dbRef, `userChats/${userData.userId}`);
+//   const refs = [userChatsRef];
+
+//   onValue(userChatsRef, querySnapshot => {
+//     const chatIdsData = querySnapshot.val() || {};
+//     const chatIds = Object.values(chatIdsData);
+
+//     const chatsData = {};
+//     let chatsFoundCount = 0;
+
+//     chatIds.forEach((chatId, index) => {
+//       const chatRef = child(dbRef, `chats/${chatId}`);
+//       refs.push(chatRef);
+
+//       onValue(chatRef, chatSnapshot => {
+//         const data = chatSnapshot.val();
+
+//         if (data && data.users.includes(userData.userId)) {
+//           data.key = chatSnapshot.key;
+
+//           data.users.forEach(userId => {
+//             if (!storedUsers[userId]) {
+//               const userRef = child(dbRef, `users/${userId}`);
+//               get(userRef).then(userSnapshot => {
+//                 const userSnapshotData = userSnapshot.val();
+//                 dispatch(
+//                   setStoredUsers({newUsers: {[userId]: userSnapshotData}})
+//                 );
+//               });
+//               refs.push(userRef);
+//             }
+//           });
+
+//           chatsData[chatSnapshot.key] = data;
+//         }
+
+//         chatsFoundCount++;
+
+//         if (chatsFoundCount >= chatIds.length) {
+//           dispatch(setChatsData({chatsData}));
+//           setIsLoading(false);
+//         }
+//       });
+
+//       const messagesRef = child(dbRef, `messages/${chatId}`);
+//       refs.push(messagesRef);
+
+//       onValue(messagesRef, messagesSnapshot => {
+//         const messagesData = messagesSnapshot.val();
+//         dispatch(setChatMessages({chatId, messagesData}));
+//       });
+//     });
+
+//     if (chatIds.length === 0) {
+//       setIsLoading(false);
+//     }
+//   });
+
+//   const userStarredMessagesRef = child(
+//     dbRef,
+//     `userStarredMessages/${userData.userId}`
+//   );
+//   refs.push(userStarredMessagesRef);
+//   onValue(userStarredMessagesRef, querySnapshot => {
+//     const starredMessages = querySnapshot.val() ?? {};
+//     dispatch(setStarredMessages({starredMessages}));
+//   });
+
+//   return () => {
+//     console.log("Unsubscribing firebase listeners");
+//     refs.forEach(ref => off(ref));
+//   };
+// }, []);
