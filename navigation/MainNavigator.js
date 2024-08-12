@@ -18,6 +18,7 @@ import colors from "../constants/colors";
 import {setStoredUsers} from "../store/userSlice";
 import {setChatMessages, setStarredMessages} from "../store/messagesSlice";
 import ContactScreen from "../screens/ContactScreen";
+import DataListScreen from "../screens/DataListScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -86,6 +87,14 @@ const StackNavigator = () => {
           component={ContactScreen}
           options={{
             headerTitle: "Contact info",
+            headerBackTitle: "Back",
+          }}
+        />
+        <Stack.Screen
+          name="DataList"
+          component={DataListScreen}
+          options={{
+            headerTitle: "",
             headerBackTitle: "Back",
           }}
         />

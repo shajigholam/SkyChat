@@ -132,7 +132,12 @@ const ChatSettingScreen = props => {
             );
           })}
           {chatData.users.length > 4 && (
-            <DataItem type={"link"} title="View all" hideImage={true} />
+            <DataItem
+              type={"link"}
+              title="View all"
+              hideImage={true}
+              onPress={() => props.navigation.navigate("DataList")}
+            />
           )}
         </View>
 
