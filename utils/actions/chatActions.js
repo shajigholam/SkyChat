@@ -172,13 +172,17 @@ export const addUsersToChat = async (
   const existingUsers = Object.values(chatData.users);
   const newUsers = [];
 
-  usersToAddData.forEach(userToAdd => {
+  let userAddedName = "";
+
+  usersToAddData.forEach(async userToAdd => {
     const userToAddId = userToAdd.userId;
     if (existingUsers.includes(userToAdd)) return;
 
     newUsers.push(userToAddId);
 
-    addUserChat(userToAddId, chatData.key);
+    await addUserChat(userToAddId, chatData.key);
+
+    userAddedName = `${userToAdd.firstName} ${userToAdd.lastName}`; //it is overridden every time but it's ok
   });
 
   if (newUsers.length === 0) {
@@ -188,4 +192,10 @@ export const addUsersToChat = async (
   await updateChatData(chatData.key, userLoggedInData.userId, {
     users: existingUsers.concat(newUsers),
   });
+
+  const moreUsersMessage =
+    newUsers.length > 1 ? `and ${newUsers.length - 1} others ` : "";
+  const messageText = `${userLoggedInData.firstName} ${userLoggedInData.lastName} added ${userAddedName} ${moreUsersMessage}to the chat`;
+
+  await sendInfoMessage(chatData.key, userLoggedInData.userId, messageText);
 };
