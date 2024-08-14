@@ -192,7 +192,7 @@ const SettingScreen = props => {
 
         <SubmitButton
           title="Logout"
-          onPress={() => dispatch(userLogout())}
+          onPress={() => dispatch(userLogout(userData))}
           style={{marginTop: 20}}
           color={colors.red}
         />

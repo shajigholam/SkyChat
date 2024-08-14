@@ -1,4 +1,8 @@
-import React, {useEffect, useState} from "react";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+
+import React, {useEffect, useRef, useState} from "react";
 import {createStackNavigator} from "@react-navigation/stack";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {Ionicons} from "@expo/vector-icons";
@@ -12,13 +16,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {getFirebaseApp} from "../utils/firebaseHelper";
 import {child, get, getDatabase, off, onValue, ref} from "firebase/database";
 import {setChatsData} from "../store/chatSlice";
-import {ActivityIndicator, View} from "react-native";
+import {ActivityIndicator, Platform, View} from "react-native";
 import commonStyles from "../constants/commonStyles";
 import colors from "../constants/colors";
 import {setStoredUsers} from "../store/userSlice";
 import {setChatMessages, setStarredMessages} from "../store/messagesSlice";
 import ContactScreen from "../screens/ContactScreen";
 import DataListScreen from "../screens/DataListScreen";
+import {StackActions, useNavigation} from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -109,11 +114,52 @@ const StackNavigator = () => {
 
 const MainNavigator = props => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const [isLoading, setIsLoading] = useState(true);
 
   const userData = useSelector(state => state.auth.userData);
   const storedUsers = useSelector(state => state.users.storedUsers);
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  // console.log(expoPushToken);
+
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(
+      token => token && setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener(notification => {
+        // handle received notification
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener(response => {
+        // console.log("Notification tapped:");
+        // console.log(response);
+        const {data} = response.notification.request.content;
+        const chatId = data["chatId"];
+        if (chatId) {
+          const pushAction = StackActions.push("ChatScreen", {chatId});
+          navigation.dispatch(pushAction);
+        } else {
+          console.log("No chat id sent with notification");
+        }
+      });
+
+    return () => {
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   useEffect(() => {
     console.log("Subscribing to firebase listeners");
@@ -207,6 +253,54 @@ const MainNavigator = props => {
 };
 
 export default MainNavigator;
+
+async function registerForPushNotificationsAsync() {
+  let token;
+
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const {status: existingStatus} = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const {status} = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    // Learn more about projectId:
+    // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
+    // EAS projectId is used here.
+    try {
+      const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ??
+        Constants?.easConfig?.projectId;
+      if (!projectId) {
+        throw new Error("Project ID not found");
+      }
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId,
+        })
+      ).data;
+    } catch (e) {
+      token = `${e}`;
+    }
+  } else {
+    console.log("Must use physical device for Push Notifications");
+  }
+
+  return token;
+}
 
 // in case
 
