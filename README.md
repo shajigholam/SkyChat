@@ -1,8 +1,12 @@
-# React Native Projetc - SkyChat 💬📱🗣️
+# React Native Project - SkyChat 💬📱🗣️
 
-SkyChat is a mobile communication app built using React Native and Firebase. It offers a seamless messaging experience with features such as real-time instant messaging, image sharing, group chat support, and more.
+SkyChat is a mobile communication app built using React Native and Firebase. It offers a seamless messaging experience with features such as real-time instant messaging, image sharing, group chat support, and more. 😊
 
 # Live Demo 📱
+
+
+https://github.com/user-attachments/assets/d0121c45-1d11-44f6-af28-28ce57d64246
+
 
 # Features 📖
 
