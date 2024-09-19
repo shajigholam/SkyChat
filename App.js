@@ -13,6 +13,7 @@ import {MenuProvider} from "react-native-popup-menu";
 // LogBox.ignoreLogs([
 //   "You are initializing Firebase Auth for React Native without providing AsyncStorage",
 // ]);
+LogBox.ignoreAllLogs();
 // AsyncStorage.clear();
 
 SplashScreen.preventAutoHideAsync();
